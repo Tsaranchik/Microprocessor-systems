@@ -1,4 +1,3 @@
-//#define F_CPU 8385000UL
 #define BAUD 9600
 #define MYUBRR F_CPU/16/BAUD-1
 
@@ -44,29 +43,19 @@ volatile static uint8_t T1_active = 0, T2_active = 0, T3_active = 0, T4_active =
 
 void init_ports(void)
 {
-	/*Настраиваем все пины портов А на вход*/
 	DDRA = 0x00;
-
-	/*Не подаем питание на порты А*/
 	PORTA = 0x00;
 
-	/*Настраиваем все пины портов B на выход*/
 	DDRB = 0xFF;
-
-	/*Не подаем питание на порты B*/
 	PORTB = 0x00;
 	
-	/*Настраиваем первые 7 пинов порта C  на выход*/
-	/*0x7F = 0b01111111*/
 	DDRC = 0x7F;
-	
-	/*Не подаем питание на порты C*/
 	PORTC = 0x00;
 }
 
 void timer_init(void)
 {
-	OCR1A = 1299;
+	OCR1A = 24999;
 	TCCR1A = 0x00;
 	TCCR1B = (1 << WGM12) | (1 << CS11) | (1 << CS10);
 	TIMSK |= (1 << OCIE1A);
@@ -134,10 +123,6 @@ uint8_t count_bits(uint8_t value)
 {
 	uint8_t count = 0;
 	for (uint8_t i = 0; i < 8; ++i) {
-		/*Если бит в позиции i == 1, то прибавляем count
-		 *Например: value = 0x11010011, i = 3, порядок Little Endian
-		 *тогда данное условие вернёт 0, т.к. 3 бит в value не равен 1
-		 */
 		if (value & (1 << i))
 			count++;
 	}
@@ -210,18 +195,15 @@ int main(void)
 		uart_init();
 		stdout = &uart_output;
 	#endif
-	/*Разрешаем глобальные прерывания*/
 	sei();
 
 	#ifdef DEBUG
 		printf("System started\n");
-		printf("ATmega32 - Timer Test\n");
 	#endif
 
 	while(1) {
 		update_outputs();
 		
-		/*Ставим небольшу задержку для стабильности работы*/
 		_delay_ms(10);
 	}
 
