@@ -1,5 +1,15 @@
-all:
-	gcc -Wall -o lab1 lab1.c
-	
+CC = gcc
+CFLAGS = -Wall
+
+TARGET = lab1
+SRC = $(TARGET).c
+
+all: $(TARGET)
+
+$(TARGET): $(TARGET).c
+	$(CC) $(CFLAGS) -o $@ $<
+
 clean:
-	rm lab1
+	rm -f $(TARGET)
+
+.PHONY: all clean
