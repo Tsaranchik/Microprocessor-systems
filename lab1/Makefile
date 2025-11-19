@@ -1,5 +1,5 @@
 all:
-	gcc -Wall -o mmio mmio_read.c
+	gcc -Wall -o lab1 lab1.c
 	
 clean:
-	rm mmio
+	rm lab1
